@@ -1,61 +1,51 @@
-// Test for getAllAppointments function
+// We need to complete with what Nina have for the 
+// getAllAppointments function
 
-require('dotenv').config();
-const appointmentsController = require('../controllers/appointments');
 const { MongoClient } = require('mongodb');
+const dotenv = require('dotenv');
+dotenv.config();
 
-describe('getAllAppointments', () => {
 
+describe('insert', () => {
   let connection;
   let db;
 
   beforeAll(async () => {
-    connection = await MongoClient.connect(process.env.MONGODB_URI);
-    db = await connection.db('KrazyKatz');
-  });
-
-  afterAll(async () => {
-    await connection.close(true);
-  });
-
-  it('should return all appointments', async () => {
-    const mockAppointments = [
-      {
-        /* mocked appointment data */
-      }
-    ];
-    jest.spyOn(mongodb.getDb().db().collection('appointments'), 'find').mockReturnValue({
-      toArray: jest.fn().mockResolvedValue(mockAppointments)
+    connection = await MongoClient.connect(process.env.MONGODB_URI, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true
     });
-
-    const req = {};
-    const res = {
-      setHeader: jest.fn(),
-      status: jest.fn(),
-      json: jest.fn()
-    };
-
-    await appointmentsController.getAllAppointments(req, res);
-
-    expect(res.status).toHaveBeenCalledWith(200);
-    expect(res.json).toHaveBeenCalledWith(mockAppointments);
+    db = await connection.db('appointments');
+  });
+  afterAll(async () => {
+    await connection.close();
   });
 
-  it('should handle errors and return 500 status', async () => {
-    jest
-      .spyOn(mongodb.getDb().db().collection('appointments'), 'find')
-      .mockRejectedValue(new Error('Mocked error'));
+  it(
+    'should insert a new appointment into the appointment collection',
+    async () => {
+      const appointments = db.collection('appointments');
 
-    const req = {};
-    const res = {
-      setHeader: jest.fn(),
-      status: jest.fn(),
-      json: jest.fn()
-    };
+      const mockAppointment = {
+        id: 'some-appointment-id',
+        user: 'some-user',
+        veterinarian: 'some-doctor',
+        dateAndTime: 'some-day',
+        purpose: 'some-purpose',
+      };
 
-    await appointmentsController.getAllAppointments(req, res);
+      await appointments.insertOne(mockAppointment);
 
-    expect(res.status).toHaveBeenCalledWith(500);
-    expect(res.json).toHaveBeenCalledWith({ error: 'Internal Server Error' });
-  });
+      const insertedAppointment = await appointments.findOne({ id: 'some-appointment-id' });
+
+      expect(insertedAppointment).toEqual(mockAppointment);
+    },
+
+    it('should delete an appointment from the appointments collection', async () => {
+      const appointments = db.collection('appointments');
+      await appointments.deleteMany({ id: 'some-appointment-id' });
+      const deletedAppointment = await appointments.findOne({ id: 'some-appointment-id' });
+      expect(deletedAppointment).toEqual(null);
+    })
+  );
 });

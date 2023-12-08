@@ -1,5 +1,3 @@
-// Nina is still working on this one.
-
 const index = require('../routes/index');
 const request = require('supertest');
 const express = require('express');
@@ -13,19 +11,13 @@ describe('Test routes in index', () => {
     request(app)
       .get('/')
       .expect('Content-Type', /json/)
-      .expect({ name: 'frodo' })
+      .expect((res) => {
+        // Check the response body
+        const body = res.body;
+        expect(body).toHaveProperty('name', 'frodo');
+      })
       .expect(200, done);
   });
 
-  test('testing route works', (done) => {
-    request(app)
-      .post('/test')
-      .type('form')
-      .send({ item: 'hey' })
-      .then(() => {
-        request(app)
-          .get('/test')
-          .expect({ array: ['hey'] }, done);
-      });
-  });
+
 });

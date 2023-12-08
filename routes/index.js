@@ -22,4 +22,10 @@ router.use('/pets', pets);
 router.use('/users', users);
 router.use('/veterinarians', veterinarians);
 
+// For Testing routes case
+router.get('/', (req, res) => {
+    // Send a JSON response
+    res.json({ name: 'frodo' });
+  });
+
 module.exports = router;

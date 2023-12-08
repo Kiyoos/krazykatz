@@ -1,10 +1,9 @@
-// We need to complete with what Nina have for the 
-// getAllAppointments function
+// We need to complete with what Nina have for the
+// getAllAppointments function - I was not able to get this figured out. Nina
 
 const { MongoClient } = require('mongodb');
 const dotenv = require('dotenv');
 dotenv.config();
-
 
 describe('insert', () => {
   let connection;
@@ -31,7 +30,7 @@ describe('insert', () => {
         user: 'some-user',
         veterinarian: 'some-doctor',
         dateAndTime: 'some-day',
-        purpose: 'some-purpose',
+        purpose: 'some-purpose'
       };
 
       await appointments.insertOne(mockAppointment);

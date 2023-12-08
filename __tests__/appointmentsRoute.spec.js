@@ -28,7 +28,7 @@ describe('Test Handlers', () => {
 
   it('responds to /', async () => {
     const res = await request(app).get('/'); // Can't get past the requiresAuth() validation
-    console.log(res);
+    // console.log(res);
     expect(res.header['content-type']).toBe('application/json; charset=utf-8');
     expect(res.statusCode).toBe(200);
   });
